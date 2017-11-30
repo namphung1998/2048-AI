@@ -21,7 +21,12 @@ public class Board {
         this.size = 4;
         this.map = createMap();
 
-        System.arraycopy(original.map, 0, this.map, 0, original.map.length);
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                this.map[row][col] = original.map[row][col];
+            }
+        }
+
     }
 
     public int[][] createMap() {
@@ -271,7 +276,7 @@ public class Board {
 
         for (int dir: DIRECTIONS) {
             Board board = new Board(this);
-            board.display();
+//            board.display();
             if (board.move(dir)) {
                 moves.add(dir);
             }
@@ -299,7 +304,5 @@ public class Board {
         System.out.println(board.getAvailableMoves());
         board.move(0);
         board.display();
-
-
     }
 }
