@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by phungvanquan on 30/11/2017.
+ * Created by Nam Phung on 30/11/2017.
  */
 public class ComputerAI extends BaseAI {
     @Override
-    public Pair<Integer, Integer> getMove(Board board) {
-        ArrayList<Pair<Integer, Integer>> cells = board.getAvailableCells();
+    public int getMove(Board board) {
+        Random random = new Random();
+        return Game.getCompMove()[random.nextInt(10)];
+    }
+
+    public Pair<Integer, Integer> getPosition(Board board) {
+        ArrayList<Pair<Integer, Integer>> moves = board.getAvailableCells();
 
         Random random = new Random();
-        int randIndex = random.nextInt(cells.size());
-
-        return (cells.size() > 0) ? cells.get(randIndex) : null;
+        return moves.get(random.nextInt(moves.size()));
     }
 
     @Override

@@ -269,13 +269,22 @@ public class Board {
     }
 
     public void printMove(int dir) {
-        Map<Integer, String> moveDirections = new HashMap<>();
-        moveDirections.put(0, "UP");
-        moveDirections.put(1, "DOWN");
-        moveDirections.put(2, "LEFT");
-        moveDirections.put(3, "RIGHT");
-
-        System.out.println(moveDirections.get(dir));
+        switch (dir) {
+            case 0:
+                System.out.println("UP");
+                break;
+            case 1:
+                System.out.println("DOWN");
+                break;
+            case 2:
+                System.out.println("LEFT");
+                break;
+            case 3:
+                System.out.println("RIGHT");
+                break;
+            default:
+                System.out.println("None");
+        }
     }
 
     public static void main(String[] args) {
