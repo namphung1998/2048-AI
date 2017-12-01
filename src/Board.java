@@ -293,6 +293,25 @@ public class Board {
         System.out.println();
     }
 
+    public void printMove(int dir) {
+        switch (dir) {
+            case 0:
+                System.out.println("UP");
+                break;
+            case 1:
+                System.out.println("DOWN");
+                break;
+            case 2:
+                System.out.println("LEFT");
+                break;
+            case 3:
+                System.out.println("RIGHT");
+                break;
+            default:
+                System.out.println("None");
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Board board = new Board();
