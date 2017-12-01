@@ -7,4 +7,6 @@ import java.util.ArrayList;
  */
 public abstract class BaseAI {
     public abstract Object getMove(Board board);
+
+    public abstract boolean canMove(Board board);
 }

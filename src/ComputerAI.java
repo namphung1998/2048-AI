@@ -16,4 +16,9 @@ public class ComputerAI extends BaseAI {
 
         return (cells.size() > 0) ? cells.get(randIndex) : null;
     }
+
+    @Override
+    public boolean canMove(Board board) {
+        return board.getAvailableCells().size() > 0;
+    }
 }

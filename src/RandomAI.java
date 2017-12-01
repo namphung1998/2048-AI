@@ -12,4 +12,9 @@ public class RandomAI extends BaseAI {
 
         return moves.get(random.nextInt(moves.size()));
     }
+
+    @Override
+    public boolean canMove(Board board) {
+        return board.getAvailableMoves().size() > 0;
+    }
 }

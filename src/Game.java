@@ -9,7 +9,7 @@ import java.util.Scanner;
  * Created by Nam Phung on 30/11/2017.
  */
 public class Game {
-    private static final int[] COMP_MOVE = {2, 2, 2, 2, 2, 2, 2, 2, 4, 4};
+    private static final int[] COMP_MOVE = {2, 2, 2, 2, 2, 2, 2, 2, 2, 4};
     private Board board;
     private ComputerAI computerAI;
     private RandomAI randomAI;
@@ -35,6 +35,10 @@ public class Game {
     public void computerMove() {
         Pair<Integer, Integer> movePos = computerAI.getMove(board);
         board.insertTile(movePos.getKey(), movePos.getValue(), COMP_MOVE[random.nextInt(10)]);
+    }
+
+    public boolean isOver() {
+        return !computerAI.canMove(board) && !randomAI.canMove(board);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -64,13 +68,5 @@ public class Game {
         }
 
         System.out.println("Game over!");
-    }
-
-    public boolean isOver() {
-        return board.getAvailableMoves().size() == 0;
-    }
-
-    public static int[] getCompMove() {
-        return COMP_MOVE;
     }
 }

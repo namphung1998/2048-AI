@@ -1,10 +1,10 @@
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 /**
+ * This class represents the board in the 2048 game.
+ *
  * Created by Nam Phung on 30/11/2017.
  */
 public class Board {
@@ -12,11 +12,18 @@ public class Board {
     private int[][] map;
     private static final int[] DIRECTIONS = {0, 1, 2, 3};
 
+    /**
+     * Constructor for class Board
+     */
     public Board() {
         this.size = 4;
         this.map = createMap();
     }
 
+    /**
+     * Copy constructor for a Board object
+     * @param original the original Board object
+     */
     public Board(Board original) {
         this.size = 4;
         this.map = createMap();
@@ -29,6 +36,10 @@ public class Board {
 
     }
 
+    /**
+     * Creates the map for this game board.
+     * @return a map that represents the game state.
+     */
     public int[][] createMap() {
         int[][] map = new int[4][4];
 
@@ -49,6 +60,10 @@ public class Board {
         setCellValue(row, col, newVal);
     }
 
+    /**
+     * Gets the available cells (cells with value zero)
+     * @return An array list of pairs of row and col that represent position on the board
+     */
     public ArrayList<Pair<Integer, Integer>> getAvailableCells() {
         ArrayList<Pair<Integer, Integer>> cells = new ArrayList<>();
 
@@ -63,6 +78,10 @@ public class Board {
         return cells;
     }
 
+    /**
+     * Gets the max value among the tiles
+     * @return the largest tile value
+     */
     public int getMaxTile() {
         int maxVal = -1;
         for (int row = 0; row < size; row++) {
@@ -227,56 +246,12 @@ public class Board {
         return outOfBounds(row, col) ? map[row][col] : -1;
     }
 
-    public boolean canMove() {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                //Current cell is filled
-                if (canInsert(row, col)) {
-                    for (int i = 0; i < 4; i++) {
-                        int move = DIRECTIONS[i];
-                        int x, y;
-                        switch (move) {
-                            case 0:
-                                x = -1;
-                                y = 0;
-                                break;
-                            case 1:
-                                x = 1;
-                                y = 0;
-                                break;
-                            case 2:
-                                x = 0;
-                                y = -1;
-                                break;
-                            case 3:
-                                x = 0;
-                                y = 1;
-                                break;
-                            default:
-                                x = 0;
-                                y = 0;
-                        }
-
-                        int adjacentCellVal = getCellValue(row + x, col + y);
-                        if (adjacentCellVal == getCellValue(row, col) || adjacentCellVal == 0) {
-                            return true;
-                        }
-                    }
-                } else if (map[row][col] == 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     public ArrayList<Integer> getAvailableMoves() {
         ArrayList<Integer> moves = new ArrayList<>();
 
         for (int dir: DIRECTIONS) {
             Board board = new Board(this);
-//            board.display();
             if (board.move(dir)) {
                 moves.add(dir);
             }
@@ -294,22 +269,13 @@ public class Board {
     }
 
     public void printMove(int dir) {
-        switch (dir) {
-            case 0:
-                System.out.println("UP");
-                break;
-            case 1:
-                System.out.println("DOWN");
-                break;
-            case 2:
-                System.out.println("LEFT");
-                break;
-            case 3:
-                System.out.println("RIGHT");
-                break;
-            default:
-                System.out.println("None");
-        }
+        Map<Integer, String> moveDirections = new HashMap<>();
+        moveDirections.put(0, "UP");
+        moveDirections.put(1, "DOWN");
+        moveDirections.put(2, "LEFT");
+        moveDirections.put(3, "RIGHT");
+
+        System.out.println(moveDirections.get(dir));
     }
 
     public static void main(String[] args) {
