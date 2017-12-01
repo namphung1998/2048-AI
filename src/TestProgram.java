@@ -6,9 +6,11 @@ import java.util.TreeMap;
  * Created by phungvanquan on 30/11/2017.
  */
 public class TestProgram {
+    private static final int TEST_TIME = 1000;
+
     public static void main(String[] args) {
-        ArrayList<Integer> maxVals = new ArrayList<>(100);
-        for (int i = 1; i < 101; i++) {
+        ArrayList<Integer> maxVals = new ArrayList<>(TEST_TIME);
+        for (int i = 1; i < TEST_TIME + 1; i++) {
             Game game = new Game();
             game.run();
 
@@ -28,7 +30,7 @@ public class TestProgram {
         String output = "";
 
         for (int key : count.keySet()) {
-            output = output + key + "-" + count.get(key) + "% ";
+            output = output + key + "-" + count.get(key) / 10 + "% ";
         }
 
         System.out.println(output);

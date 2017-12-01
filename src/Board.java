@@ -268,6 +268,10 @@ public class Board {
         System.out.println();
     }
 
+    public int[][] getMap() {
+        return map;
+    }
+
     public void printMove(int dir) {
         switch (dir) {
             case 0:
