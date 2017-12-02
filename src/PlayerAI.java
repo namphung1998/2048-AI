@@ -1,5 +1,5 @@
 /**
- * Created by phungvanquan on 30/11/2017.
+ * Created by Nam Phung on 30/11/2017.
  */
 public class PlayerAI extends BaseAI {
     @Override
