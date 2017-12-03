@@ -12,17 +12,17 @@ public class Game {
     private static final int[] COMP_MOVE = {2, 2, 2, 2, 2, 2, 2, 2, 2, 4};
     private Board board;
     private ComputerAI computerAI;
-    private RandomAI randomAI;
-    private PlayerAI playerAI;
     private Random random;
+    private BaseAI AI;
 
     public Game() {
         this.board = new Board();
         this.computerAI = new ComputerAI();
-        this.randomAI = new RandomAI();
+//        this.randomAI = new RandomAI();
         this.random = new Random();
-        this.playerAI = new PlayerAI();
+//        this.playerAI = new PlayerAI();
 
+        this.AI = new PlayerAI();
         startGame();
     }
 
@@ -40,27 +40,28 @@ public class Game {
     }
 
     public void run() {
-        board.display();
+//        board.display();
 
-        // System.out.println("Available moves: " + board.getAvailableMoves());
+//         System.out.println("Available moves: " + board.getAvailableMoves());
 
         while (true) {
-            // System.out.println("Player's turn: ");
-            int dir = playerAI.getMove(board);
+//            System.out.println("Player's turn: ");
+            int dir = AI.getMove(board);
             board.move(dir);
-            // board.printMove(dir);
-            // board.display();
+//            board.printMove(dir);
+//            board.display();
 //            Thread.sleep(500);
 
             computerMove();
 
 
-            // System.out.println();
-            // System.out.println("Computer's move: ");
-            // board.display();
-            // System.out.println("Available moves: " + board.getAvailableMoves());
+//             System.out.println();
+//             System.out.println("Computer's move: ");
+//             board.display();
+//             System.out.println("Available moves: " + board.getAvailableMoves());
 
             if (isOver()) {
+                board.display();
                 break;
             }
         }
@@ -74,7 +75,7 @@ public class Game {
     }
 
     public boolean isOver() {
-        return !computerAI.canMove(board) && !randomAI.canMove(board);
+        return !computerAI.canMove(board) && !AI.canMove(board);
     }
 
     public Board getBoard() {
