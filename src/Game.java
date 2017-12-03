@@ -13,6 +13,7 @@ public class Game {
     private Board board;
     private ComputerAI computerAI;
     private RandomAI randomAI;
+    private PlayerAI playerAI;
     private Random random;
 
     public Game() {
@@ -20,6 +21,7 @@ public class Game {
         this.computerAI = new ComputerAI();
         this.randomAI = new RandomAI();
         this.random = new Random();
+        this.playerAI = new PlayerAI();
 
         startGame();
     }
@@ -44,7 +46,7 @@ public class Game {
 
         while (true) {
             // System.out.println("Player's turn: ");
-            int dir = randomAI.getMove(board);
+            int dir = playerAI.getMove(board);
             board.move(dir);
             // board.printMove(dir);
             // board.display();

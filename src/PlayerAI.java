@@ -1,10 +1,32 @@
+import javafx.util.Pair;
+
+import java.sql.Time;
+import java.util.ArrayList;
+
 /**
  * Created by Nam Phung on 30/11/2017.
  */
 public class PlayerAI extends BaseAI {
+    private double pre = 0.0;
+    private int currentMaxDepth = 1;
+    private double allowedTime = 0.2;
+
+
     @Override
     public int getMove(Board board) {
-        return 0;
+        pre = System.currentTimeMillis();
+        currentMaxDepth++;
+        Pair<Integer, Double> move = null;
+
+        while (System.currentTimeMillis() - pre < allowedTime * 1000) {
+            currentMaxDepth++;
+            Pair<Integer, Double> newMove = decision(board);
+
+            if (move == null || (newMove.getValue() > move.getValue() && newMove.getKey() != null)) {
+                move = newMove;
+            }
+        }
+        return move.getKey();
     }
 
     @Override
@@ -33,6 +55,82 @@ public class PlayerAI extends BaseAI {
         int smoothness = smoothness(board);
 
         return monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
+    }
+
+    public Pair<Integer, Double> maximize(Board board, double alpha, double beta, int depth) {
+        ArrayList<Integer> availableMoves = board.getAvailableMoves();
+        depth++;
+
+        if (!(availableMoves.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime * 1000)) {
+            return new Pair<Integer, Double>(-1, heuristic(board));
+        }
+
+        int maxChild = -1;
+        double maxScore = -Double.MAX_VALUE;
+
+        for (int dir : availableMoves) {
+            Board temp = new Board(board);
+            temp.move(dir);
+
+            Pair<Board, Double> nextState = minimize(temp, alpha, beta, depth);
+
+            if (nextState.getValue() > maxScore) {
+                maxScore = nextState.getValue();
+                maxChild = dir;
+            }
+
+            if (maxScore >= beta) {
+                break;
+            }
+
+            if (maxScore > alpha) {
+                alpha = maxScore;
+            }
+        }
+
+        return new Pair<Integer, Double>(maxChild, maxScore);
+    }
+
+    public Pair<Board, Double> minimize(Board board, double alpha, double beta, int depth) {
+        ArrayList<Pair<Integer, Integer>> emptyCells = board.getAvailableCells();
+        depth++;
+
+        if (!(emptyCells.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime * 1000)) {
+            return new Pair<Board, Double>(null, heuristic(board));
+        }
+
+        Board minChild = null;
+        double minScore = Double.MAX_VALUE;
+
+        // A list of all states reachable from the current state when the computer moves
+        ArrayList<Pair<Integer, Pair<Integer, Integer>>> allStates = new ArrayList<>();
+
+        for (int val = 2; val < 5; val *= 2) {
+            for (Pair<Integer, Integer> cell : emptyCells) {
+                allStates.add(new Pair<>(val, cell));
+            }
+        }
+
+        for (Pair<Integer, Pair<Integer, Integer>> state : allStates) {
+            Board temp = new Board(board);
+            board.insertTile(state.getValue().getKey(), state.getValue().getValue(), state.getKey());
+            Pair<Integer, Double> nextState = maximize(temp, alpha, beta, depth);
+
+            if (nextState.getValue() < minScore) {
+                minScore = nextState.getValue();
+                minChild = temp;
+            }
+
+            if (minScore <= alpha) {
+                break;
+            }
+
+            if (minScore < beta) {
+                beta = minScore;
+            }
+        }
+
+        return new Pair<Board, Double>(minChild, minScore);
     }
 
     public int monotonicity(Board board) {
@@ -97,5 +195,9 @@ public class PlayerAI extends BaseAI {
         }
 
         return score * -1;
+    }
+
+    public Pair<Integer, Double> decision(Board board) {
+        return maximize(board, -Double.MAX_VALUE, Double.MAX_VALUE, 0);
     }
 }
