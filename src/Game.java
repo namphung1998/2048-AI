@@ -18,10 +18,7 @@ public class Game {
     public Game() {
         this.board = new Board();
         this.computerAI = new ComputerAI();
-//        this.randomAI = new RandomAI();
         this.random = new Random();
-//        this.playerAI = new PlayerAI();
-
         this.AI = new PlayerAI();
         startGame();
     }
