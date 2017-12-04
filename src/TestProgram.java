@@ -10,7 +10,7 @@ public class TestProgram {
 
     public static void main(String[] args) {
         ArrayList<Integer> maxVals = new ArrayList<>(TEST_TIME);
-        for (int i = 0; i < TEST_TIME; i++) {
+        for (int i = 1; i < TEST_TIME + 1; i++) {
             System.out.println("Test game: " + i);
             Game game = new Game();
             game.run();
