@@ -37,25 +37,24 @@ public class Game {
     }
 
     public void run() {
-//        board.display();
-
-//         System.out.println("Available moves: " + board.getAvailableMoves());
+        board.display();
+        System.out.println("Available moves: " + board.getAvailableMoves());
 
         while (true) {
-//            System.out.println("Player's turn: ");
+            System.out.println("Player's turn: ");
             int dir = AI.getMove(board);
             board.move(dir);
-//            board.printMove(dir);
-//            board.display();
+            board.printMove(dir);
+            board.display();
 //            Thread.sleep(500);
 
             computerMove();
 
 
-//             System.out.println();
-//             System.out.println("Computer's move: ");
-//             board.display();
-//             System.out.println("Available moves: " + board.getAvailableMoves());
+            System.out.println();
+            System.out.println("Computer's move: ");
+            board.display();
+            System.out.println("Available moves: " + board.getAvailableMoves());
 
             if (isOver()) {
                 board.display();
