@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class PlayerAI extends BaseAI {
     private double pre = 0.0;
     private int currentMaxDepth = 1;
-    private double allowedTime = 0.2;
+    private double allowedTime = 200;
 
 
     @Override
@@ -18,7 +18,7 @@ public class PlayerAI extends BaseAI {
         currentMaxDepth++;
         Pair<Integer, Double> move = null;
 
-        while (System.currentTimeMillis() - pre < allowedTime * 1000) {
+        while (System.currentTimeMillis() - pre < allowedTime) {
             currentMaxDepth++;
             Pair<Integer, Double> newMove = decision(board);
 
@@ -47,9 +47,7 @@ public class PlayerAI extends BaseAI {
             sumCells += sumRow;
         }
 
-        int averageCellsValue = sumCells / (16 - numEmptyCell);
         int monotonicity = monotonicity(board);
-
         int emptyValue = (numEmptyCell != 0) ? (int)(Math.log(numEmptyCell) / Math.log(2)) : 0;
         int largestPositionScore = largestTilePositionScore(board);
         int smoothness = smoothness(board);
@@ -61,8 +59,8 @@ public class PlayerAI extends BaseAI {
         ArrayList<Integer> availableMoves = board.getAvailableMoves();
         depth++;
 
-        if (!(availableMoves.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime * 1000)) {
-            return new Pair<Integer, Double>(-1, heuristic(board));
+        if (!(availableMoves.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime)) {
+            return new Pair<>(-1, heuristic(board));
         }
 
         int maxChild = -1;
@@ -88,15 +86,15 @@ public class PlayerAI extends BaseAI {
             }
         }
 
-        return new Pair<Integer, Double>(maxChild, maxScore);
+        return new Pair<>(maxChild, maxScore);
     }
 
     public Pair<Board, Double> minimize(Board board, double alpha, double beta, int depth) {
         ArrayList<Pair<Integer, Integer>> emptyCells = board.getAvailableCells();
         depth++;
 
-        if (!(emptyCells.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime * 1000)) {
-            return new Pair<Board, Double>(null, heuristic(board));
+        if (!(emptyCells.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime)) {
+            return new Pair<>(null, heuristic(board));
         }
 
         Board minChild = null;
@@ -130,7 +128,7 @@ public class PlayerAI extends BaseAI {
             }
         }
 
-        return new Pair<Board, Double>(minChild, minScore);
+        return new Pair<>(minChild, minScore);
     }
 
     public int monotonicity(Board board) {
