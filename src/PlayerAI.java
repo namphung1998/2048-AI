@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class PlayerAI extends BaseAI {
     private double pre = 0.0;
     private int currentMaxDepth = 1;
-    private double allowedTime = 0.2;
+    private double allowedTime = 2;
 
 
     @Override
@@ -18,7 +18,7 @@ public class PlayerAI extends BaseAI {
         currentMaxDepth++;
         Pair<Integer, Double> move = null;
 
-        while (System.currentTimeMillis() - pre < allowedTime * 1000) {
+        while (System.currentTimeMillis() - pre < allowedTime) {
             currentMaxDepth++;
             Pair<Integer, Double> newMove = decision(board);
 
@@ -61,7 +61,7 @@ public class PlayerAI extends BaseAI {
         ArrayList<Integer> availableMoves = board.getAvailableMoves();
         depth++;
 
-        if (!(availableMoves.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime * 1000)) {
+        if (!(availableMoves.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime)) {
             return new Pair<Integer, Double>(-1, heuristic(board));
         }
 
@@ -95,7 +95,7 @@ public class PlayerAI extends BaseAI {
         ArrayList<Pair<Integer, Integer>> emptyCells = board.getAvailableCells();
         depth++;
 
-        if (!(emptyCells.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime * 1000)) {
+        if (!(emptyCells.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime)) {
             return new Pair<Board, Double>(null, heuristic(board));
         }
 

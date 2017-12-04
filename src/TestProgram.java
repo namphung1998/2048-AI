@@ -9,10 +9,14 @@ public class TestProgram {
     private static final int TEST_TIME = 100;
 
     public static void main(String[] args) {
+        BaseAI playerAI =  new PlayerAI();
+        BaseAI randomAI = new RandomAI();
+
+
         ArrayList<Integer> maxVals = new ArrayList<>(TEST_TIME);
         for (int i = 1; i < TEST_TIME + 1; i++) {
             System.out.println("Test game: " + i);
-            Game game = new Game();
+            Game game = new Game(playerAI);
             game.run();
 
             maxVals.add(game.getBoard().getMaxTile());

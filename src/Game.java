@@ -15,11 +15,11 @@ public class Game {
     private Random random;
     private BaseAI AI;
 
-    public Game() {
+    public Game(BaseAI AI) {
         this.board = new Board();
         this.computerAI = new ComputerAI();
         this.random = new Random();
-        this.AI = new PlayerAI();
+        this.AI = AI;
         startGame();
     }
 
@@ -80,7 +80,8 @@ public class Game {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Game game = new Game();
+        BaseAI playerAI = new PlayerAI();
+        Game game = new Game(playerAI);
         game.run();
     }
 }
