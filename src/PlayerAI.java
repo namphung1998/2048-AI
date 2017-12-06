@@ -9,7 +9,7 @@ public class PlayerAI extends BaseAI {
     private double pre = 0.0;
     private int currentMaxDepth = 1;
     private double allowedTime = 200; //time in miliseconds
-    private static final int MAX_DEPTH = 7
+    private static final int MAX_DEPTH = 7;
 
     @Override
     public int getMove(Board board) {
