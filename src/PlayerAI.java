@@ -1,6 +1,5 @@
 import javafx.util.Pair;
 
-import java.sql.Time;
 import java.util.ArrayList;
 
 /**
@@ -9,19 +8,16 @@ import java.util.ArrayList;
 public class PlayerAI extends BaseAI {
     private double pre = 0.0;
     private int currentMaxDepth = 1;
-    private double allowedTime = 200;
-
+    private double allowedTime = 200; //time in miliseconds
 
     @Override
     public int getMove(Board board) {
-        pre = System.currentTimeMillis();
-        currentMaxDepth++;
+        currentMaxDepth = 1;
         Pair<Integer, Double> move = null;
 
-        while (System.currentTimeMillis() - pre < allowedTime) {
+        while (currentMaxDepth < 8) {
             currentMaxDepth++;
             Pair<Integer, Double> newMove = decision(board);
-
             if (move == null || (newMove.getValue() > move.getValue() && newMove.getKey() != null)) {
                 move = newMove;
             }
@@ -34,39 +30,18 @@ public class PlayerAI extends BaseAI {
         return board.getAvailableMoves().size() > 0;
     }
 
-    public double heuristic(Board board) {
-        int numEmptyCell = board.getAvailableCells().size();
-        int sumCells = 0;
-
-        for (int[] row : board.getMap()) {
-            int sumRow = 0;
-            for (int cell : row) {
-                sumRow += cell;
-            }
-
-            sumCells += sumRow;
-        }
-
-        int monotonicity = monotonicity(board);
-        int emptyValue = (numEmptyCell != 0) ? (int)(Math.log(numEmptyCell) / Math.log(2)) : 0;
-        int largestPositionScore = largestTilePositionScore(board);
-        int smoothness = smoothness(board);
-
-        return monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
-    }
-
     public Pair<Integer, Double> maximize(Board board, double alpha, double beta, int depth) {
-        ArrayList<Integer> availableMoves = board.getAvailableMoves();
+        ArrayList<Integer> moves = board.getAvailableMoves();
         depth++;
 
-        if (!(availableMoves.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime)) {
-            return new Pair<>(-1, heuristic(board));
+        if (moves.size() == 0 || depth > currentMaxDepth) {
+            return new Pair<>(null, heuristic(board));
         }
 
         int maxChild = -1;
-        double maxScore = -Double.MAX_VALUE;
+        double maxScore = Double.MIN_VALUE;
 
-        for (int dir : availableMoves) {
+        for (int dir : moves) {
             Board temp = new Board(board);
             temp.move(dir);
 
@@ -85,33 +60,32 @@ public class PlayerAI extends BaseAI {
                 alpha = maxScore;
             }
         }
-
         return new Pair<>(maxChild, maxScore);
     }
 
     public Pair<Board, Double> minimize(Board board, double alpha, double beta, int depth) {
-        ArrayList<Pair<Integer, Integer>> emptyCells = board.getAvailableCells();
+        ArrayList<Position> emptyCells = board.getAvailableCells();
         depth++;
 
-        if (!(emptyCells.size() > 0) || (depth > this.currentMaxDepth) || (System.currentTimeMillis() - pre > allowedTime)) {
+        if (emptyCells.size() == 0 || depth > currentMaxDepth) {
             return new Pair<>(null, heuristic(board));
         }
 
         Board minChild = null;
         double minScore = Double.MAX_VALUE;
 
-        // A list of all states reachable from the current state when the computer moves
-        ArrayList<Pair<Integer, Pair<Integer, Integer>>> allStates = new ArrayList<>();
+        ArrayList<Pair<Integer, Position>> allStates = new ArrayList<>();
 
-        for (int val = 2; val < 5; val *= 2) {
-            for (Pair<Integer, Integer> cell : emptyCells) {
-                allStates.add(new Pair<>(val, cell));
+        for (Position position : emptyCells) {
+            for (int move = 2; move < 5; move *= 2) {
+                allStates.add(new Pair<>(move, position));
             }
         }
 
-        for (Pair<Integer, Pair<Integer, Integer>> state : allStates) {
+        for (Pair<Integer, Position> state : allStates) {
             Board temp = new Board(board);
-            board.insertTile(state.getValue().getKey(), state.getValue().getValue(), state.getKey());
+            temp.insertTile(state.getValue(), state.getKey());
+
             Pair<Integer, Double> nextState = maximize(temp, alpha, beta, depth);
 
             if (nextState.getValue() < minScore) {
@@ -129,6 +103,26 @@ public class PlayerAI extends BaseAI {
         }
 
         return new Pair<>(minChild, minScore);
+    }
+
+    public double heuristic(Board board) {
+        int numEmptyCell = board.getAvailableCells().size();
+        int sumCells = 0;
+
+        for (int[] row : board.getMap()) {
+            int sumRow = 0;
+            for (int cell : row) {
+                sumRow += cell;
+            }
+
+            sumCells += sumRow;
+        }
+
+        int monotonicity = monotonicity(board);
+        int emptyValue = (numEmptyCell != 0) ? (int)(Math.log(numEmptyCell) / Math.log(2)) : 0;
+        int smoothness = smoothness(board);
+
+        return monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
     }
 
     public int monotonicity(Board board) {
@@ -158,25 +152,6 @@ public class PlayerAI extends BaseAI {
         return Math.max(Math.max(monotonicity[0], monotonicity[1]), Math.max(monotonicity[2], monotonicity[3]));
     }
 
-    public int largestTilePositionScore(Board board) {
-        int score = 0;
-        int maxVal = board.getMaxTile();
-
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-                if (board.getCellValue(row, col) == maxVal) {
-                    if ((row == 0 || row == 3) && (col == 0 || col == 3)) {
-                        score += 10;
-                    } else {
-                        score -= 10;
-                    }
-                }
-            }
-        }
-
-        return score;
-    }
-
     public int smoothness(Board board) {
         int score = 0;
 
@@ -195,7 +170,51 @@ public class PlayerAI extends BaseAI {
         return score * -1;
     }
 
+    public double heuristic2(Board board) {
+        int score = (int) (board.getMaxTile() + Math.log(board.getMaxTile() * board.getAvailableCells().size() - clusteringScore(board)));
+        return Math.max(score, Math.min(board.getMaxTile(), 1));
+    }
+
+    public int clusteringScore(Board board) {
+        int score = 0;
+        int[] neighbors = {-1, 0, 1};
+
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (board.getCellValue(row, col) == 0) {
+                    continue;
+                }
+
+                int numNeighbors = 0;
+                int sum = 0;
+
+                for (int k : neighbors) {
+                    int x = row + k;
+                    if (x < 0 || x >= 4) {
+                        continue;
+                    }
+
+                    for (int l : neighbors) {
+                        int y = col + l;
+                        if (y < 0 || y >= 4) {
+                            continue;
+                        }
+
+                        if (board.getCellValue(x, y) > 0) {
+                            numNeighbors++;
+                            sum += Math.abs(board.getCellValue(row, col) - board.getCellValue(x, y));
+                        }
+                    }
+                }
+
+                score += sum/numNeighbors;
+            }
+        }
+
+        return score;
+    }
+
     public Pair<Integer, Double> decision(Board board) {
-        return maximize(board, -Double.MAX_VALUE, Double.MAX_VALUE, 0);
+        return maximize(board, Double.MIN_VALUE, Double.MAX_VALUE, 0);
     }
 }

@@ -52,25 +52,25 @@ public class Board {
         return map;
     }
 
-    public void setCellValue(int row, int col, int newVal) {
-        map[row][col] = newVal;
+    public void setCellValue(Position pos, int newVal) {
+        map[pos.getRow()][pos.getCol()] = newVal;
     }
 
-    public void insertTile(int row, int col, int newVal) {
-        setCellValue(row, col, newVal);
+    public void insertTile(Position pos, int newVal) {
+        setCellValue(pos, newVal);
     }
 
     /**
      * Gets the available cells (cells with value zero)
      * @return An array list of pairs of row and col that represent position on the board
      */
-    public ArrayList<Pair<Integer, Integer>> getAvailableCells() {
-        ArrayList<Pair<Integer, Integer>> cells = new ArrayList<>();
+    public ArrayList<Position> getAvailableCells() {
+        ArrayList<Position> cells = new ArrayList<>();
 
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 if (map[row][col] == 0) {
-                    cells.add(new Pair<>(row, col));
+                    cells.add(new Position(row, col));
                 }
             }
         }
@@ -289,18 +289,5 @@ public class Board {
             default:
                 System.out.println("None");
         }
-    }
-
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Board board = new Board();
-        board.setCellValue(0, 0, 2);
-        board.setCellValue(1, 0, 2);
-        board.setCellValue(0, 1, 4);
-
-        board.display();
-        System.out.println(board.getAvailableMoves());
-        board.move(0);
-        board.display();
     }
 }

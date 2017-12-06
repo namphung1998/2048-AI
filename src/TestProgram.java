@@ -35,7 +35,7 @@ public class TestProgram {
         String output = "";
 
         for (int key : count.keySet()) {
-            output = output + key + "-" + (double)(count.get(key) / (TEST_TIME / 100)) + "% ";
+            output = output + key + "-" + (count.get(key) / (TEST_TIME / 100)) + "% ";
         }
 
         System.out.println(output);

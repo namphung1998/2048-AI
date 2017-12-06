@@ -24,11 +24,11 @@ public class Game {
     }
 
     public void startGame() {
-        ArrayList<Pair<Integer, Integer>> cells = board.getAvailableCells();
+        ArrayList<Position> cells = board.getAvailableCells();
         for (int i = 0; i < 2; i++) {
-            Pair<Integer, Integer> pos = cells.get(random.nextInt(cells.size()));
+            Position pos = cells.get(random.nextInt(cells.size()));
             cells.remove(pos);
-            board.insertTile(pos.getKey(), pos.getValue(), COMP_MOVE[random.nextInt(10)]);
+            board.insertTile(pos, COMP_MOVE[random.nextInt(10)]);
         }
     }
 
@@ -66,8 +66,8 @@ public class Game {
     }
 
     public void computerMove() {
-        Pair<Integer, Integer> movePos = computerAI.getPosition(board);
-        board.insertTile(movePos.getKey(), movePos.getValue(), computerAI.getMove(board));
+        Position movePos = computerAI.getPosition(board);
+        board.insertTile(movePos, computerAI.getMove(board));
     }
 
     public boolean isOver() {

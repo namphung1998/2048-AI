@@ -13,8 +13,8 @@ public class ComputerAI extends BaseAI {
         return Game.getCompMove()[random.nextInt(10)];
     }
 
-    public Pair<Integer, Integer> getPosition(Board board) {
-        ArrayList<Pair<Integer, Integer>> moves = board.getAvailableCells();
+    public Position getPosition(Board board) {
+        ArrayList<Position> moves = board.getAvailableCells();
 
         Random random = new Random();
         return moves.get(random.nextInt(moves.size()));
