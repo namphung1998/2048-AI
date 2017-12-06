@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * Created by Nam Phung on 30/11/2017.
  */
-public class ComputerAI extends BaseAI {
+public class ComputerAI implements BaseAI {
     @Override
     public int getMove(Board board) {
         Random random = new Random();

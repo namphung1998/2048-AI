@@ -4,7 +4,7 @@ import java.util.Random;
 /**
  * Created by Nam  on 30/11/2017.
  */
-public class RandomAI extends BaseAI {
+public class RandomAI implements BaseAI {
     @Override
     public int getMove(Board board) {
         ArrayList<Integer> moves = board.getAvailableMoves();

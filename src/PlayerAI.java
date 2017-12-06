@@ -5,10 +5,8 @@ import java.util.ArrayList;
 /**
  * Created by Nam Phung on 30/11/2017.
  */
-public class PlayerAI extends BaseAI {
-    private double pre = 0.0;
+public class PlayerAI implements BaseAI {
     private int currentMaxDepth = 1;
-    private double allowedTime = 200; //time in miliseconds
     private static final int MAX_DEPTH = 7;
 
     @Override
