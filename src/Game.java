@@ -1,9 +1,5 @@
-import javafx.util.Pair;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Created by Nam Phung on 30/11/2017.
@@ -36,25 +32,30 @@ public class Game {
         return COMP_MOVE;
     }
 
+    public void playerTurn() {
+        System.out.println("Player's turn: ");
+        int dir = AI.getMove(board);
+        board.move(dir);
+        board.printMove(dir);
+        board.display();
+    }
+
+    public void computerTurn() {
+        computerMove();
+        System.out.println();
+        System.out.println("Computer's move: ");
+        board.display();
+        System.out.println("Available moves: " + board.getAvailableMoves());
+    }
+
     public void run() {
         board.display();
         System.out.println("Available moves: " + board.getAvailableMoves());
 
         while (true) {
-            System.out.println("Player's turn: ");
-            int dir = AI.getMove(board);
-            board.move(dir);
-            board.printMove(dir);
-            board.display();
-//            Thread.sleep(500);
+            playerTurn();
 
-            computerMove();
-
-
-            System.out.println();
-            System.out.println("Computer's move: ");
-            board.display();
-            System.out.println("Available moves: " + board.getAvailableMoves());
+            computerTurn();
 
             if (isOver()) {
                 board.display();

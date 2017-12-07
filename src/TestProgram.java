@@ -3,7 +3,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by phungvanquan on 30/11/2017.
+ * Created by Nam Phung on 30/11/2017.
  */
 public class TestProgram {
     private static final int TEST_TIME = 100;
