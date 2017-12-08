@@ -33,14 +33,13 @@ public class Board {
                 this.map[row][col] = original.map[row][col];
             }
         }
-
     }
 
     /**
      * Creates the map for this game board.
      * @return a map that represents the game state.
      */
-    public int[][] createMap() {
+    private int[][] createMap() {
         int[][] map = new int[4][4];
 
         for (int i = 0; i < 4; i++) {
@@ -52,7 +51,7 @@ public class Board {
         return map;
     }
 
-    public void setCellValue(Position pos, int newVal) {
+    private void setCellValue(Position pos, int newVal) {
         map[pos.getRow()][pos.getCol()] = newVal;
     }
 

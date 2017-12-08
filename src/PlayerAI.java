@@ -120,8 +120,9 @@ public class PlayerAI implements BaseAI {
         int monotonicity = monotonicity(board);
         int emptyValue = (numEmptyCell != 0) ? (int)(Math.log(numEmptyCell) / Math.log(2)) : 0;
         int smoothness = smoothness(board);
+//        int largestTilePositionScore = largestTilePositionScore(board);
 
-        return monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
+        return 2 * monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
     }
 
     public int monotonicity(Board board) {
@@ -169,44 +170,19 @@ public class PlayerAI implements BaseAI {
         return score * -1;
     }
 
-    public double heuristic2(Board board) {
-        int score = (int) (board.getMaxTile() + Math.log(board.getMaxTile() * board.getAvailableCells().size() - clusteringScore(board)));
-        return Math.max(score, Math.min(board.getMaxTile(), 1));
-    }
-
-    public int clusteringScore(Board board) {
+    public int largestTilePositionScore(Board board) {
         int score = 0;
-        int[] neighbors = {-1, 0, 1};
+        int maxValue = board.getMaxTile();
 
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
-                if (board.getCellValue(row, col) == 0) {
-                    continue;
-                }
-
-                int numNeighbors = 0;
-                int sum = 0;
-
-                for (int k : neighbors) {
-                    int x = row + k;
-                    if (x < 0 || x >= 4) {
-                        continue;
-                    }
-
-                    for (int l : neighbors) {
-                        int y = col + l;
-                        if (y < 0 || y >= 4) {
-                            continue;
-                        }
-
-                        if (board.getCellValue(x, y) > 0) {
-                            numNeighbors++;
-                            sum += Math.abs(board.getCellValue(row, col) - board.getCellValue(x, y));
-                        }
+                if (board.getCellValue(row, col) == maxValue) {
+                    if ((row == 0 || row == 3) && (col == 0 || col == 3)) {
+                        score += 10;
+                    } else {
+                        score -= 10;
                     }
                 }
-
-                score += sum/numNeighbors;
             }
         }
 

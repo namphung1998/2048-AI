@@ -1,9 +1,5 @@
-import javafx.util.Pair;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Created by Nam Phung on 30/11/2017.
@@ -65,6 +61,24 @@ public class Game {
         System.out.println("Game over!");
     }
 
+    public void runWithTimer() {
+        long start = System.currentTimeMillis();
+
+        while (true) {
+            int dir = AI.getMove(board);
+            board.move(dir);
+            computerMove();
+
+            if (isOver()) {
+                break;
+            }
+        }
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Time taken: " + (end - start));
+    }
+
     public void computerMove() {
         Position movePos = computerAI.getPosition(board);
         board.insertTile(movePos, computerAI.getMove(board));
@@ -78,9 +92,9 @@ public class Game {
         return board;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         BaseAI playerAI = new PlayerAI();
         Game game = new Game(playerAI);
-        game.run();
+        game.runWithTimer();
     }
 }
