@@ -8,13 +8,20 @@ import java.util.ArrayList;
 public class PlayerAI implements BaseAI {
     private int currentMaxDepth = 1;
     private static final int MAX_DEPTH = 7;
+    private int maxDepth = 7;
 
     @Override
     public int getMove(Board board) {
         currentMaxDepth = 1;
         Pair<Integer, Double> move = null;
 
-        while (currentMaxDepth <= MAX_DEPTH) {
+        if (board.getAvailableCells().size() <= 4) {
+            maxDepth = 15;
+        } else if (board.getAvailableCells().size() <= 8) {
+            maxDepth = 10;
+        }
+
+        while (currentMaxDepth <= maxDepth) {
             currentMaxDepth++;
             Pair<Integer, Double> newMove = decision(board);
             if (move == null || (newMove.getValue() > move.getValue() && newMove.getKey() != null)) {
@@ -120,9 +127,9 @@ public class PlayerAI implements BaseAI {
         int monotonicity = monotonicity(board);
         int emptyValue = (numEmptyCell != 0) ? (int)(Math.log(numEmptyCell) / Math.log(2)) : 0;
         int smoothness = smoothness(board);
-//        int largestTilePositionScore = largestTilePositionScore(board);
+        int largestTilePositionScore = largestTilePositionScore(board);
 
-        return 2 * monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
+        return 2 * largestTilePositionScore + monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
     }
 
     public int monotonicity(Board board) {

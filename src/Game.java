@@ -100,6 +100,7 @@ public class Game {
     public static void main(String[] args) throws Exception {
         BaseAI playerAI = new PlayerAI();
         Game game = new Game(playerAI);
-        game.runWithTimer();
+//        game.runWithTimer();
+        game.run();
     }
 }
