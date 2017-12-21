@@ -34,6 +34,7 @@ public class TestProgram {
     public static void main(String[] args) {
         BaseAI playerAI =  new PlayerAI();
         BaseAI randomAI = new RandomAI();
+
         ArrayList<Integer> maxVals = new ArrayList<>(TEST_TIME);
 
         for (int i = 1; i < TEST_TIME + 1; i++) {

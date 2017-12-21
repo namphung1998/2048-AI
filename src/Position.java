@@ -11,18 +11,34 @@ public class Position {
         this.col = col;
     }
 
+    /**
+     * Getter for row
+     * @return
+     */
     public int getRow() {
         return row;
     }
 
+    /**
+     * Getter for col
+     * @return
+     */
     public int getCol() {
         return col;
     }
 
+    /**
+     * Setter for row
+     * @param row
+     */
     public void setRow(int row) {
         this.row = row;
     }
 
+    /**
+     * Setter for col
+     * @param col
+     */
     public void setCol(int col) {
         this.col = col;
     }

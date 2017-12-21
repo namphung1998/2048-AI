@@ -8,12 +8,14 @@ import java.util.ArrayList;
 public class PlayerAI implements BaseAI {
     private int currentMaxDepth = 1;
     private static final int MAX_DEPTH = 7;
-    private double pre = 0.0;
-    private static final double ALLOWED_TIME = 200;
 
+    /**
+     * Determine this player's next move
+     * @param board
+     * @return an integer corresponding to the chosen move
+     */
     @Override
     public int getMove(Board board) {
-        pre = System.currentTimeMillis();
         currentMaxDepth = 1;
         Pair<Integer, Double> move = null;
 
@@ -32,6 +34,14 @@ public class PlayerAI implements BaseAI {
         return board.getAvailableMoves().size() > 0;
     }
 
+    /**
+     * Maximizing player 1's payoff
+     * @param board
+     * @param alpha
+     * @param beta
+     * @param depth
+     * @return
+     */
     public Pair<Integer, Double> maximize(Board board, double alpha, double beta, int depth) {
         ArrayList<Integer> moves = board.getAvailableMoves();
         depth++;
@@ -65,6 +75,14 @@ public class PlayerAI implements BaseAI {
         return new Pair<>(maxChild, maxScore);
     }
 
+    /**
+     * Minimizing player 2's payoff
+     * @param board
+     * @param alpha
+     * @param beta
+     * @param depth
+     * @return
+     */
     public Pair<Board, Double> minimize(Board board, double alpha, double beta, int depth) {
         ArrayList<Position> emptyCells = board.getAvailableCells();
         depth++;
@@ -107,6 +125,11 @@ public class PlayerAI implements BaseAI {
         return new Pair<>(minChild, minScore);
     }
 
+    /**
+     * The heuristic function used to assign a value to each game state
+     * @param board
+     * @return
+     */
     public double heuristic(Board board) {
         int numEmptyCell = board.getAvailableCells().size();
         int sumCells = 0;
@@ -166,6 +189,11 @@ public class PlayerAI implements BaseAI {
         return score - penalty;
     }
 
+    /**
+     * This method evaluates the monotonicity heuristic value
+     * @param board
+     * @return
+     */
     public double monotonicity(Board board) {
         double[] monotonicity = {0, 0, 0, 0};
 
@@ -199,6 +227,14 @@ public class PlayerAI implements BaseAI {
 
         return maxVal;
     }
+
+    /**
+     * This method evaluates the smoothness value, that is, whether the position has big differences between
+     * neighboring cells
+     *
+     * @param board
+     * @return
+     */
 
     public double smoothness(Board board) {
         double score = 0.0;

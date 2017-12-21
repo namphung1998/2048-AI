@@ -3,6 +3,8 @@ import java.util.Random;
 
 /**
  * Created by Nam Phung on 30/11/2017.
+ *
+ * This class manages the game of 2048.
  */
 public class Game {
     private static final int[] COMP_MOVE = {2, 2, 2, 2, 2, 2, 2, 2, 2, 4};
@@ -11,6 +13,10 @@ public class Game {
     private Random random;
     private BaseAI AI;
 
+    /**
+     * Constructor for Game
+     * @param AI The AI agent designated as Player 1
+     */
     public Game(BaseAI AI) {
         this.board = new Board();
         this.computerAI = new ComputerAI();
@@ -19,6 +25,9 @@ public class Game {
         startGame();
     }
 
+    /**
+     * Setting up the game's initial position
+     */
     public void startGame() {
         ArrayList<Position> cells = board.getAvailableCells();
         for (int i = 0; i < 2; i++) {
@@ -65,6 +74,7 @@ public class Game {
 
         System.out.println("Game over!");
     }
+
 
     public void runWithTimer() {
         long start = System.currentTimeMillis();

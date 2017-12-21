@@ -109,7 +109,11 @@ public class Board {
         }
     }
 
-    public void merge(ArrayList<Integer> cells) {
+    /**
+     * Merging the tiles with the same value
+     * @param cells
+     */
+    private void merge(ArrayList<Integer> cells) {
         if (cells.size() >= 2) {
             int i = 0;
             while (i < cells.size() - 1) {
@@ -123,7 +127,7 @@ public class Board {
         }
     }
 
-    public boolean moveUp() {
+    private boolean moveUp() {
         boolean moved = false;
 
         for (int col = 0; col < size; col++) {
@@ -151,7 +155,7 @@ public class Board {
         return moved;
     }
 
-    public boolean moveDown() {
+    private boolean moveDown() {
         boolean moved = false;
 
         for (int col = 0; col < size; col++) {
@@ -179,7 +183,7 @@ public class Board {
         return moved;
     }
 
-    public boolean moveLeft() {
+    private boolean moveLeft() {
         boolean moved = false;
 
         for (int row = 0; row < size; row++) {
