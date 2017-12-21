@@ -8,13 +8,16 @@ import java.util.ArrayList;
 public class PlayerAI implements BaseAI {
     private int currentMaxDepth = 1;
     private static final int MAX_DEPTH = 7;
+    private double pre = 0.0;
+    private static final double ALLOWED_TIME = 200;
 
     @Override
     public int getMove(Board board) {
+        pre = System.currentTimeMillis();
         currentMaxDepth = 1;
         Pair<Integer, Double> move = null;
 
-        while (currentMaxDepth <= MAX_DEPTH) {
+        while (currentMaxDepth < MAX_DEPTH) {
             currentMaxDepth++;
             Pair<Integer, Double> newMove = decision(board);
             if (move == null || (newMove.getValue() > move.getValue() && newMove.getKey() != null)) {
@@ -117,22 +120,61 @@ public class PlayerAI implements BaseAI {
             sumCells += sumRow;
         }
 
-        int monotonicity = monotonicity(board);
-        int emptyValue = (numEmptyCell != 0) ? (int)(Math.log(numEmptyCell) / Math.log(2)) : 0;
-        int smoothness = smoothness(board);
-//        int largestTilePositionScore = largestTilePositionScore(board);
+        double monotonicity = monotonicity(board);
+        double emptyValue = (numEmptyCell != 0) ? (Math.log(numEmptyCell) / Math.log(2)) : 0;
+        double smoothness = smoothness(board);
+        int largestTilePositionScore = largestTilePositionScore(board);
 
-        return 2 * monotonicity + emptyValue * 2.5 + board.getMaxTile() + 0.1 * smoothness;
+        return monotonicity + emptyValue * 2.7 + board.getMaxTile() + 0.1 * smoothness;
     }
 
-    public int monotonicity(Board board) {
-        int[] monotonicity = {0, 0, 0, 0};
+    public double heuristic2(Board board) {
+        int[][] w = {{6, 5, 4, 3}, {5, 4, 3, 2}, {4, 3, 2, 1}, {3, 2, 1, 0}};
+        int score = 0;
+
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                score += w[row][col] * board.getCellValue(row, col);
+            }
+        }
+
+        int penalty = 0;
+        int[] neighbors = {-1, 0, 1};
+
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (board.getCellValue(row, col) == 0) {
+                    continue;
+                }
+
+                for (int k : neighbors) {
+                    int x = row + k;
+                    if (x < 0 || x >= 4) {
+                        continue;
+                    }
+                    for (int l : neighbors) {
+                        int y = col + l;
+                        if (y < 0 || y >= 4) {
+                            continue;
+                        }
+                        penalty += Math.abs(board.getCellValue(row, col) - board.getCellValue(x, y));
+                    }
+                }
+            }
+        }
+
+        return score - penalty;
+    }
+
+    public double monotonicity(Board board) {
+        double[] monotonicity = {0, 0, 0, 0};
+
 
         for (int row = 0; row < 4; row++) {
             int[] line = board.getMap()[row];
             for (int i = 0; i < 3; i++) {
-                int currentCell = (line[i] != 0) ? (int)(Math.log(line[i]) / Math.log(2)) : 0;
-                int nextCell = (line[i+1] != 0) ? (int)(Math.log(line[i+1]) / Math.log(2)) : 0;
+                double currentCell = (line[i] != 0) ? (Math.log(line[i]) / Math.log(2)) : 0;
+                double nextCell = (line[i + 1] != 0) ? (Math.log(line[i + 1]) / Math.log(2)) : 0;
 
                 monotonicity[2] += (nextCell - currentCell);
                 monotonicity[3] += (currentCell - nextCell);
@@ -141,19 +183,25 @@ public class PlayerAI implements BaseAI {
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 4; col++) {
-                int currentCell = (board.getMap()[row][col] != 0) ? (int)(Math.log(board.getMap()[row][col]) / Math.log(2)) : 0;
-                int nextCell = (board.getMap()[row+1][col] != 0) ? (int)(Math.log(board.getMap()[row+1][col]) / Math.log(2)) :0;
+                double currentCell = (board.getMap()[row][col] != 0) ? (Math.log(board.getMap()[row][col]) / Math.log(2)) : 0;
+                double nextCell = (board.getMap()[row + 1][col] != 0) ? (Math.log(board.getMap()[row + 1][col]) / Math.log(2)) : 0;
 
                 monotonicity[1] += (nextCell - currentCell);
                 monotonicity[0] += (currentCell - nextCell);
             }
         }
 
-        return Math.max(Math.max(monotonicity[0], monotonicity[1]), Math.max(monotonicity[2], monotonicity[3]));
+        double maxVal = -1;
+
+        for (int i = 0; i < 4; i++) {
+            maxVal = Math.max(maxVal, monotonicity[i]);
+        }
+
+        return maxVal;
     }
 
-    public int smoothness(Board board) {
-        int score = 0;
+    public double smoothness(Board board) {
+        double score = 0.0;
 
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {

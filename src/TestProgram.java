@@ -9,7 +9,7 @@ import java.util.TreeMap;
  * Created by Nam Phung on 30/11/2017.
  */
 public class TestProgram {
-    private static final int TEST_TIME = 100;
+    private static final int TEST_TIME = 1000;
 
     private static String getOutPut(ArrayList<Integer> values) {
         Map<Integer, Integer> count = new TreeMap<>();
@@ -39,7 +39,7 @@ public class TestProgram {
         for (int i = 1; i < TEST_TIME + 1; i++) {
             System.out.println("Test game: " + i);
             Game game = new Game(playerAI);
-            game.run();
+            game.runWithTimer();
 
             maxVals.add(game.getBoard().getMaxTile());
         }
